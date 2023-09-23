@@ -1,0 +1,106 @@
+---
+title: "Getting occurrence data"
+format: html
+editor: visual
+---
+
+
+To favor project readability and reproducibility I recommend creating an R project or fork this repository to your github account. If you start a new project please run the following code to create the file organization
+
+
+```{r}
+#| label: create structure
+#| include: true
+#| eval: false
+
+folders <- c("data/raw",
+             "data/processed",
+             "data/shapefiles",
+             "scripts",
+             "scripts/models",
+             "output/figures",
+             "output/tables",
+             "output/models")
+
+sapply(folders,
+       FUN = dir.create,
+       recursive = TRUE)
+```
+
+
+For ecologists interested in modeling, it's fundamental to collect occurrence (and absence) data from as many reliable sources as possible. Search data in biological collections, refereed publications, and global repositories. 
+
+For this example we we will get some occurrence data from two global datasets: GBIF and INaturalist. 
+
+We will use functions from the tidyverse package to prepare the data and the packages sf and tmap to map and evaluate occurrences. To avoid any conflict with functions that have the same name, make sure to load tidyverse as the last package.
+
+
+```{r}
+#| label: load-package
+#| include: false
+#| message: false
+#| warning: false
+
+library(rgbif)
+library(rinat)
+library(sf)
+library(tmap)
+library(tidyverse)
+```
+
+
+
+First we will add data from GBIF. Creating a vector with the species name allows to use this code with other species with minimal changes. Just change the species name of the study_species objecy 
+
+
+```{r}
+study_species <- "Agalychnis spurrelli"
+
+gbif_data <- # download gbif data for my species
+  occ_data(
+  scientificName = study_species, 
+  hasCoordinate = TRUE, 
+  limit = 10000) #rgbif 321 records
+
+names(gbif_data)## list of two elements (meta and data)
+
+gbif_data <- 
+  gbif_data %>% 
+  pluck('data')
+
+```
+
+```{r}
+gbif_data <- 
+  gbif_data %>% 
+  pluck('data')
+
+```
+
+
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+
+```{r}
+1 + 1
+```
+
+
+You can add options to executable code like this
+
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
